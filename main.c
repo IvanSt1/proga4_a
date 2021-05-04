@@ -10,7 +10,7 @@ int main() {
     int rc;
     rc = dialog(msgs, NMgsgs);
     while (rc) {
-        if (!f[rc](root)) {
+        if (!f[rc](&root)) {
             break;
         }
         rc = dialog(msgs, NMgsgs);

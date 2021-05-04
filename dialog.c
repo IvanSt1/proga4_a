@@ -20,7 +20,7 @@ int dialog(const char *msgs[], int n) {
     rc--;
     return rc;
 }
-int D_Add(Item *root){
+int D_Add(Item **root){
     int first,second,rc;
     char *key;
     char *third;
@@ -44,15 +44,15 @@ int D_Add(Item *root){
         return 1;
 
 }
-int D_Delete(Item *ptr){
+int D_Delete(Item **ptr){
     return 1;
 }
-int D_Find(Item *ptr){
+int D_Find(Item **ptr){
     return 1;
 }
-int D_Show(Item *ptr){
+int D_Show(Item **ptr){
     return 1;
 }
-int D_Find_Nearest(Item *ptr){
+int D_Find_Nearest(Item **ptr){
     return 1;
 }
