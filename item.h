@@ -17,6 +17,5 @@ typedef struct Item{
     struct Item *left;
     struct Item *right;
 } Item;
-
-_Noreturn int insert(Item* ptr,char* key, int first,int second,char* third);
+int insert(Item* ptr,char* key, int first,int second,char* third);
 #endif //PROGA4_A_ITEM_H

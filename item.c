@@ -51,5 +51,5 @@ int insert(Item *root, char *key, int first, int second, char *third) {
         }
     }
 
-    return 1;
+    return 0;
 }
