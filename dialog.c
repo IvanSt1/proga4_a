@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <malloc.h>
 #include "dialog.h"
 #include "get.h"
 #include "item.h"
-const char *errmsgs[] = {"OK", "Duplicate key", "Table overflow", "Wrong parent key"};
+const char *errmsgs[] = {"OK", "Duplicate key", "Memory problem","There is no such key"};
 int dialog(const char *msgs[], int n) {
     char *errmsg = "";
     int rc;
@@ -44,13 +45,40 @@ int D_Add(Item **root){
         return 1;
 
 }
-int D_Delete(Item **ptr){
+int D_Delete(Item **root){
+    char* key;
+    printf("Enter key:\n");
+    key = Get_Str();
+    if (key == NULL) {
+        return 0;
+    }
+    *root=delete(*root,key);
+    free(key);
     return 1;
 }
-int D_Find(Item **ptr){
+int D_Find(Item **root){
+    char *key;
+    printf("Enter key:\n");
+    key = Get_Str();
+    if (key == NULL) {
+        return 0;
+    }
+    Item*ptr=*root;
+    Item *x =find(ptr,key);
+    if (x==NULL){
+        printf("There is no such key: %s\n",key);
+    }
+    else{
+        printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->key,x->info->num1,x->info->num2,x->info->string);
+    }
+    free(key);
     return 1;
 }
-int D_Show(Item **ptr){
+int D_Show(Item **root){
+    int rc= show(root);
+    if (rc==0){
+        printf("Table is empty");
+    }
     return 1;
 }
 int D_Find_Nearest(Item **ptr){
