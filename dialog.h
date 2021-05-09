@@ -13,6 +13,7 @@ int D_Delete(Item **ptr);
 int D_Find(Item **ptr);
 int D_Show(Item **ptr);
 int D_Find_Nearest(Item **ptr);
-
+void D_Delete_ALL(Item **ptr);
+int D_Show_Exceeding_Key(Item**ptr);
 
 #endif //PROGA4_A_DIALOG_H

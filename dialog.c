@@ -52,7 +52,7 @@ int D_Delete(Item **root){
     if (key == NULL) {
         return 0;
     }
-    int rc=delete(root,key);
+    int rc=delete(root,key,0);
     printf("%s",errmsgs[rc]);
     free(key);
     return 1;
@@ -83,5 +83,27 @@ int D_Show(Item **root){
     return 1;
 }
 int D_Find_Nearest(Item **ptr){
+    return 1;
+}
+void D_Delete_ALL(Item **ptr){
+    if(ptr!=NULL){
+        delete_all(*ptr);
+    }
+}
+int D_Show_Exceeding_Key(Item**ptr){
+    char *key;
+    printf("Enter key:\n");
+    key = Get_Str();
+    if (key == NULL) {
+        return 0;
+    }
+    Item* x=find(*ptr,key);
+    if (x==NULL){
+        printf("There is no such key: %s\n",key);
+    }
+    else{
+        work(x->right);
+    }
+    free(key);
     return 1;
 }

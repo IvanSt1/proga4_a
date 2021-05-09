@@ -19,8 +19,9 @@ typedef struct Item{
 } Item;
 int insert(Item** ptr,char* key, int first,int second,char* third);
 int show(Item** root);
-void work(Item ** ptr);
+void work(Item * ptr);
 Item * find(Item *ptr,char* key);
-int delete(Item **root, char*key);
+int delete(Item **root, char*key,int flag);
 Item * min(Item *root);
+void delete_all(Item *ptr);
 #endif //PROGA4_A_ITEM_H
