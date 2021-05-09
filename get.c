@@ -30,23 +30,10 @@ int Get_Int0(int *a) {
 }
 
 char *Get_Str() {
-    int len = 0, n;
-    char buf[80];
-    char *res = malloc(80 * sizeof(char));
-    *res = '\0';
-    scanf("%*[\n]");
-    do {
-        n = scanf("%79[^\n]", buf);
-        if (n<0){
-            free(res);
-            return NULL;
-        }
-        len += strlen(buf);
-        if (n > 0) {
-            res = realloc(res, len * sizeof(char) + 1);
-            strcat(res, buf);
-        }
-    } while (n != 0 && n != -1);
+    int n;
+    char *res;
+    n = scanf(" %m[^\n]", &res);
+
     if (n == -1) {
         free(res);
         return NULL;

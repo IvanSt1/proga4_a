@@ -3,7 +3,7 @@
 #include "dialog.h"
 #include "get.h"
 #include "item.h"
-const char *errmsgs[] = {"OK", "Duplicate key", "Memory problem","There is no such key"};
+const char *errmsgs[] = {"OK", "Duplicate key", "Memory problem","There is no such key", "Table is empty"};
 int dialog(const char *msgs[], int n) {
     char *errmsg = "";
     int rc;
@@ -52,7 +52,8 @@ int D_Delete(Item **root){
     if (key == NULL) {
         return 0;
     }
-    *root=delete(*root,key);
+    int rc=delete(root,key);
+    printf("%s",errmsgs[rc]);
     free(key);
     return 1;
 }

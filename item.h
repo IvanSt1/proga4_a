@@ -21,6 +21,6 @@ int insert(Item** ptr,char* key, int first,int second,char* third);
 int show(Item** root);
 void work(Item ** ptr);
 Item * find(Item *ptr,char* key);
-Item * delete(Item *root, char*key);
+int delete(Item **root, char*key);
 Item * min(Item *root);
 #endif //PROGA4_A_ITEM_H
