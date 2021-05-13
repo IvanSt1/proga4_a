@@ -64,8 +64,7 @@ int D_Find(Item **root){
     if (key == NULL) {
         return 0;
     }
-    Item*ptr=*root;
-    Item *x =find(ptr,key);
+    Item *x =find(*root,key);
     if (x==NULL){
         printf("There is no such key: %s\n",key);
     }
@@ -82,7 +81,27 @@ int D_Show(Item **root){
     }
     return 1;
 }
-int D_Find_Nearest(Item **ptr){
+int D_Find_Nearest(Item **root){
+    char *key;
+    printf("Enter key:\n");
+    key = Get_Str();
+    if (key == NULL) {
+        return 0;
+    }
+    Item *x =find_nearest(*root,key);
+    if (x==NULL){
+        printf("There is no such key: %s\n",key);
+    }
+    else{
+        printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->key,x->info->num1,x->info->num2,x->info->string);
+        if(x->left!=NULL){
+            printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->left->key,x->left->info->num1,x->left->info->num2,x->left->info->string);
+        }
+        if(x->right!=NULL){
+            printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->right->key,x->right->info->num1,x->right->info->num2,x->right->info->string);
+        }
+    }
+    free(key);
     return 1;
 }
 void D_Delete_ALL(Item **ptr){

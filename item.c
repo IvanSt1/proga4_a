@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include <malloc.h>
 #include <string.h>
+#include <stdlib.h>
 #include "item.h"
 
 int insert(Item **root, char *key, int first, int second, char *third) {
@@ -100,6 +101,77 @@ Item *find(Item *ptr, char *key) {
     }
     return res;
 }
+int summa(char* s){
+        int sum = 0;
+        int len=strlen(s);
+        for (int i = 0; i < len ; i++) {
+            sum += (int) s[i];
+        }
+        return sum;
+
+}
+Item *find_nearest(Item *ptr, char *key) {
+    Item *res = NULL;
+    int k = strcmp(key, ptr->key);
+    if (k == 0) {
+        Item *x=max(ptr->right);
+        Item *y=min(ptr->left);
+        if (x==NULL){
+            if (y==NULL){
+                res=NULL;
+            }
+            else{
+                res=y;
+            }
+        }
+        else{
+            if(y==NULL){
+                res=x;
+            }
+            else{
+                int len1= summa(key);
+                int len2=summa(x->key);
+                int len3= summa(y->key);
+                if (abs(len1-len2)>abs(len1-len3)){
+                    res=y;
+                }
+                else{
+                    if (abs(len1-len2)<abs(len1-len3)){
+                        res=x;
+                    }
+                    else{
+                        res=x;
+                        res->left=y;
+                    }
+                }
+            }
+        }
+    } else {
+        if (k < 0) {
+            while(k<0&& ptr->left != NULL){
+                ptr=ptr->left;
+                k = strcmp(key, ptr->key);
+            }
+            Item* x=min(ptr->right);
+            int lenptr= summa(ptr->key);
+            int lenpar= summa(ptr->parent->key);
+            int lenmin= summa(x);
+            if (k=0){
+
+            }
+            else{
+
+            }
+        } else {
+            while(k>0&& ptr->right != NULL){
+                ptr=ptr->right;
+                k = strcmp(key, ptr->key);
+            }
+
+        }
+    }
+    return res;
+}
 
 Item *min(Item *ptr) {
     Item *x = ptr;
@@ -109,6 +181,13 @@ Item *min(Item *ptr) {
     return x;
 }
 
+Item *max(Item *ptr) {
+    Item *x = ptr;
+    while (x != NULL && x->right != NULL) {
+        x = x->right;
+    }
+    return x;
+}
 int delete(Item **root, char *key ,int flag) {
 
     if (*root == NULL) {
@@ -123,6 +202,9 @@ int delete(Item **root, char *key ,int flag) {
             if((*root)->left==NULL){
                 if ((*root)->right==NULL){
                     *root=NULL;
+                    free(x->info->string);
+                    free(x->info);
+                    free(x->key);
                 }
                 else{
                     (*root)->info=(*root)->right->info;

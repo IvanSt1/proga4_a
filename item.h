@@ -24,4 +24,7 @@ Item * find(Item *ptr,char* key);
 int delete(Item **root, char*key,int flag);
 Item * min(Item *root);
 void delete_all(Item *ptr);
+Item *find_nearest(Item *ptr, char *key);
+Item *max(Item *ptr);
+int summa(char* s);
 #endif //PROGA4_A_ITEM_H
