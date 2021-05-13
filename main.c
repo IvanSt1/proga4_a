@@ -13,20 +13,19 @@ int (*f[])(Item **) ={NULL, D_Add, D_Delete, D_Find, D_Show, D_Find_Nearest, D_S
 int main() {
     Item *root = NULL;
     int rc;
-    rc = dialog(msgs, NMgsgs);
     printf("Do you want to work with file? (y/n)");
     char *answer = Get_Str();
     if (answer==NULL){
-        printf("something goes wrong restart");
+        printf("Something goes wrong restart\n");
         return 0;
     }
     int k1 = strcmp("y", answer);
     int k2 = strcmp("n", answer);
     while ((k1 != 0) && (k2 != 0)) {
-        printf("Try one more time");
+        printf("Try one more time\n");
         answer=Get_Str();
         if (answer==NULL){
-            printf("something goes wrong restart");
+            printf("something goes wrong restart\n");
             return 0;
         }
         k2 = strcmp("n", answer);
@@ -35,6 +34,7 @@ int main() {
     if (k1 == 0) {
         Add_from_file(&root);
     }
+    rc = dialog(msgs, NMgsgs);
     while (rc) {
         if (!f[rc](&root)) {
             break;

@@ -121,17 +121,27 @@ int D_Show_Exceeding_Key(Item**ptr){
     return 1;
 }
 void Add_from_file(Item** root){
-    printf("Enter file Name");
+    printf("Enter file Name\n");
     char* name=Get_Str();
     if (name==NULL){
         return ;
     }
-   int res= work_with_file(root,name);
-    if (res==0){
-        printf("Format of information is wrong in file ");
+   FILE *file = fopen(name, "r");
+    while (file==NULL){
+        printf("There is no such file, try one more time\n");
+        printf("Enter file Name\n");
+        name=Get_Str();
+        if (name==NULL){
+            return ;
+        }
+        file = fopen(name, "r");
+    }
+   int res= work_with_file(root,file);
+    if (res!=0){
+        printf("Format of information is wrong in file\n");
         D_Delete_ALL(root);
     }
     else{
-        printf("Successful reading from file");
+        printf("Successful reading from file\n");
     }
 }

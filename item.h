@@ -30,5 +30,5 @@ Item *max(Item *ptr);
 Item *find_previous(Item* ptr);
 Item *find_following(Item* ptr);
 int summa(char *s);
-int work_with_file(Item** root,char *name);
+int work_with_file(Item** root, FILE *file);
 #endif //PROGA4_A_ITEM_H

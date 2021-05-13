@@ -374,8 +374,34 @@ void delete_all(Item *ptr) {
         free(ptr);
     }
 }
-int work_with_file(Item** root,char *name){
+int work_with_file(Item** root,FILE *file){
     int res;
-
+    int num1;
+    int num2;
+    char* key;
+    char* string;
+    int n;
+    while(!feof(file)){
+        fscanf(file," %m[^\n]",&key);
+        fgetc(file);
+        n=fscanf(file," %d",&num1);
+        if (n==0){
+            res=1;
+            break;
+        }
+        fgetc(file);
+        n=fscanf(file," %d",&num2);
+        if (n==0){
+            res=1;
+            break;
+        }
+        fgetc(file);
+        fscanf(file," %m[^\n]",&string);
+        fgetc(file);
+        res=insert(root,key, num1,num2,string);
+        if (res!=0){
+            break;
+        }
+    }
     return res;
 }
