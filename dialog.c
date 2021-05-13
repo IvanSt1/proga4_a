@@ -94,12 +94,6 @@ int D_Find_Nearest(Item **root){
     }
     else{
         printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->key,x->info->num1,x->info->num2,x->info->string);
-        if(x->left!=NULL){
-            printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->left->key,x->left->info->num1,x->left->info->num2,x->left->info->string);
-        }
-        if(x->right!=NULL){
-            printf("key: %s | first number: %d | second number: %d | information string: %s\n",x->right->key,x->right->info->num1,x->right->info->num2,x->right->info->string);
-        }
     }
     free(key);
     return 1;
@@ -125,4 +119,19 @@ int D_Show_Exceeding_Key(Item**ptr){
     }
     free(key);
     return 1;
+}
+void Add_from_file(Item** root){
+    printf("Enter file Name");
+    char* name=Get_Str();
+    if (name==NULL){
+        return ;
+    }
+   int res= work_with_file(root,name);
+    if (res==0){
+        printf("Format of information is wrong in file ");
+        D_Delete_ALL(root);
+    }
+    else{
+        printf("Successful reading from file");
+    }
 }

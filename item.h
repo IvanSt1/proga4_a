@@ -25,6 +25,10 @@ int delete(Item **root, char*key,int flag);
 Item * min(Item *root);
 void delete_all(Item *ptr);
 Item *find_nearest(Item *ptr, char *key);
+void show_tree(Item* ptr, int i);
 Item *max(Item *ptr);
-int summa(char* s);
+Item *find_previous(Item* ptr);
+Item *find_following(Item* ptr);
+int summa(char *s);
+int work_with_file(Item** root,char *name);
 #endif //PROGA4_A_ITEM_H

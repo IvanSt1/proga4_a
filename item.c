@@ -65,23 +65,36 @@ int show(Item **root) {
     }
     Item *ptr = *root;
     work(ptr);
+    show_tree(ptr, 0);
     return 1;
 }
 
 void work(Item *ptr) {
     if (ptr != NULL) {
-        if (ptr->parent!=NULL) {
+        if (ptr->parent != NULL) {
             printf("key: %s | first number: %d | second number: %d | information string: %s | parent key: %s \n",
                    ptr->key,
                    ptr->info->num1, ptr->info->num2, ptr->info->string, ptr->parent->key);
-        }
-        else{
+        } else {
             printf("key: %s | first number: %d | second number: %d | information string: %s \n",
                    ptr->key,
                    ptr->info->num1, ptr->info->num2, ptr->info->string);
         }
         work(ptr->left);
         work(ptr->right);
+    }
+}
+
+void show_tree(Item *ptr, int i) {
+    if (ptr == NULL) {
+        return;
+    } else {
+        show_tree(ptr->left, i + 1);
+        for (int j = 0; j < i; j++) {
+            printf("\t");
+        }
+        printf("%s\n", ptr->key);
+        show_tree(ptr->right, i + 1);
     }
 }
 
@@ -101,75 +114,124 @@ Item *find(Item *ptr, char *key) {
     }
     return res;
 }
-int summa(char* s){
-        int sum = 0;
-        int len=strlen(s);
-        for (int i = 0; i < len ; i++) {
-            sum += (int) s[i];
-        }
-        return sum;
+
+int summa(char *s) {
+    int sum = 0;
+    int len = strlen(s);
+    for (int i = 0; i < len; i++) {
+        sum += (int) s[i];
+    }
+    return sum;
 
 }
-Item *find_nearest(Item *ptr, char *key) {
+
+Item *find_following(Item *ptr) {
+    Item *res;
+    Item *par;
+    if (ptr->right != NULL) {
+        res = min(ptr->right);
+    } else {
+        par = ptr->parent;
+        while ((par != NULL) && (par->right == ptr)) {
+            ptr = par;
+            par = ptr->parent;
+        }
+        res = par;
+    }
+    return res;
+}
+
+Item *find_previous(Item *ptr) {
+    Item *res;
+    Item *par;
+    if (ptr->left != NULL) {
+        res = max(ptr->left);
+    } else {
+        par = ptr->parent;
+        while ((par != NULL) && (par->left == ptr)) {
+            ptr = par;
+            par = ptr->parent;
+        }
+        res = par;
+    }
+    return res;
+}
+
+Item *find_nearest(Item *root, char *key) {
     Item *res = NULL;
-    int k = strcmp(key, ptr->key);
-    if (k == 0) {
-        Item *x=max(ptr->right);
-        Item *y=min(ptr->left);
-        if (x==NULL){
-            if (y==NULL){
-                res=NULL;
-            }
-            else{
-                res=y;
+    Item *ptr;
+    Item *par;
+    Item *following;
+    Item *previous;
+    int k;
+    if (root == NULL) {
+        res = NULL;
+    } else {
+        ptr = root;
+        while (ptr != NULL) {
+            par = ptr;
+            k = strcmp(key, ptr->key);
+            if (k == 0) {
+                break;
+            } else {
+                if (k < 0) {
+                    ptr = ptr->left;
+                } else {
+                    ptr = ptr->right;
+                }
             }
         }
-        else{
-            if(y==NULL){
-                res=x;
-            }
-            else{
-                int len1= summa(key);
-                int len2=summa(x->key);
-                int len3= summa(y->key);
-                if (abs(len1-len2)>abs(len1-len3)){
-                    res=y;
+        if (ptr != NULL) {
+            following = find_following(ptr);
+            previous = find_previous(ptr);
+            if (following == NULL) {
+                if (previous == NULL) {
+                    res = NULL;
+                } else {
+                    res = following;
                 }
-                else{
-                    if (abs(len1-len2)<abs(len1-len3)){
-                        res=x;
+            } else {
+                if (previous == NULL) {
+                    res = following;
+                } else {
+                    int sum_key = summa(key);
+                    int sum_fol=summa(following->key);
+                    int sum_pre= summa(previous->key);
+                    if(abs(sum_key-sum_fol)<abs(sum_key-sum_pre)){
+                        res=following;
                     }
                     else{
-                        res=x;
-                        res->left=y;
+                        res=previous;
+                    }
+                }
+            }
+        } else {
+            following = find_following(par);
+            previous = find_previous(par);
+            if (following == NULL) {
+                if (previous == NULL) {
+                    res = NULL;
+                } else {
+                    res = following;
+                }
+            } else {
+                if (previous == NULL) {
+                    res = following;
+                } else {
+                    int sum_key = summa(key);
+                    int sum_fol=summa(following->key);
+                    int sum_pre= summa(previous->key);
+                    if(abs(sum_key-sum_fol)<abs(sum_key-sum_pre)){
+                        res=following;
+                    }
+                    else{
+                        res=previous;
                     }
                 }
             }
         }
-    } else {
-        if (k < 0) {
-            while(k<0&& ptr->left != NULL){
-                ptr=ptr->left;
-                k = strcmp(key, ptr->key);
-            }
-            Item* x=min(ptr->right);
-            int lenptr= summa(ptr->key);
-            int lenpar= summa(ptr->parent->key);
-            int lenmin= summa(x);
-            if (k=0){
-
-            }
-            else{
-
-            }
-        } else {
-            while(k>0&& ptr->right != NULL){
-                ptr=ptr->right;
-                k = strcmp(key, ptr->key);
-            }
-
-        }
     }
+
     return res;
 }
 
@@ -188,129 +250,121 @@ Item *max(Item *ptr) {
     }
     return x;
 }
-int delete(Item **root, char *key ,int flag) {
+
+int delete(Item **root, char *key, int flag) {
 
     if (*root == NULL) {
         return 4;
     }
-    Item* x= find(*root,key);
-    if (x==NULL){
+    Item *x = find(*root, key);
+    if (x == NULL) {
         return 3;
-    }
-    else{
-        if (x==*root){ // удаляемый элемент корень
-            if((*root)->left==NULL){
-                if ((*root)->right==NULL){
-                    *root=NULL;
+    } else {
+        if (x == *root) { // удаляемый элемент корень
+            if ((*root)->left == NULL) {
+                if ((*root)->right == NULL) {
+                    *root = NULL;
+                    free(x->info->string);
+                    free(x->info);
+                    free(x->key);
+                } else {
+                    (*root)->info = (*root)->right->info;
+                    if ((*root)->right->left != NULL) {
+                        (*root)->right->left->parent = (*root);
+                    }
+                    if ((*root)->right->right != NULL) {
+                        (*root)->right->right->parent = (*root);
+                    }
+                    char *s = x->right->key;
+                    delete(root, s, 1);
+                    (*root)->key = s;
+
+                }
+            } else {
+                if ((*root)->right == NULL) {
+                    (*root)->info = x->left->info;
+                    if ((*root)->left->left != NULL) {
+                        (*root)->left->left->parent = (*root);
+                    }
+                    if ((*root)->left->right != NULL) {
+                        (*root)->left->right->parent = (*root);
+                    }
+                    char *s = x->left->key;
+                    delete(root, s, 1);
+                    (*root)->key = s;
+                } else {
+                    if ((*root)->right->left != NULL) {
+                        (*root)->right->left->parent = (*root);
+                    }
+                    if ((*root)->right->right != NULL) {
+                        (*root)->right->right->parent = (*root);
+                    }
+                    if ((*root)->left->left != NULL) {
+                        (*root)->left->left->parent = (*root);
+                    }
+                    if ((*root)->left->right != NULL) {
+                        (*root)->left->right->parent = (*root);
+                    }
+                    Item *y = min(x->right);
+                    (*root)->info = y->info;
+                    char *s = y->key;
+                    delete(root, s, 1);
+                    (*root)->key = s;
+                }
+            }
+
+        } else {
+            if (x->left == NULL) { // нет левого поддерева
+                if (x->parent->left == x) {
+                    x->parent->left = x->right;
+                    if (x->right != NULL) {
+                        x->right->parent = x->parent;
+                    }
+                } else {
+                    x->parent->right = x->right;
+                    if (x->right != NULL) {
+                        x->right->parent = x->parent;
+                    }
+                }
+                if (flag == 0) {
                     free(x->info->string);
                     free(x->info);
                     free(x->key);
                 }
-                else{
-                    (*root)->info=(*root)->right->info;
-                    if ((*root)->right->left!=NULL){
-                        (*root)->right->left->parent=(*root);
-                    }
-                    if ((*root)->right->right!=NULL){
-                        (*root)->right->right->parent=(*root);
-                    }
-                    char* s =x->right->key;
-                    delete(root,s,1);
-                    (*root)->key=s;
-
-                }
-            }
-            else {
-                if ((*root)->right==NULL){
-                    (*root)->info=x->left->info;
-                    if ((*root)->left->left!=NULL){
-                        (*root)->left->left->parent=(*root);
-                    }
-                    if ((*root)->left->right!=NULL){
-                        (*root)->left->right->parent=(*root);
-                    }
-                    char* s =x->left->key;
-                    delete(root,s,1);
-                    (*root)->key=s;
-                }
-                else{
-                    if ((*root)->right->left!=NULL){
-                        (*root)->right->left->parent=(*root);
-                    }
-                    if ((*root)->right->right!=NULL){
-                        (*root)->right->right->parent=(*root);
-                    }
-                    if ((*root)->left->left!=NULL){
-                        (*root)->left->left->parent=(*root);
-                    }
-                    if ((*root)->left->right!=NULL){
-                        (*root)->left->right->parent=(*root);
-                    }
-                    Item * y=min(x->right);
-                    (*root)->info=y->info;
-                    char* s=y->key;
-                    delete(root,s,1);
-                    (*root)->key=s;
-                }
-            }
-
-        }
-        else{
-            if (x->left==NULL){ // нет левого поддерева
-                if (x->parent->left==x) {
-                    x->parent->left=x->right;
-                    if (x->right!=NULL) {
-                        x->right->parent = x->parent;
-                    }
-                }
-                else{
-                    x->parent->right=x->right;
-                    if (x->right!=NULL) {
-                        x->right->parent = x->parent;
-                    }
-                }
-                if (flag==0){
-                    free(x->info->string);
-                    free(x->info);
-                    free(x->key);
-                }
-            }
-            else
-            {
-                if (x->right==NULL){ // нет правого поддерерва
-                    if (x->parent->left==x) {
-                        x->parent->left=x->left;
-                        if(x->left!=NULL) {
+            } else {
+                if (x->right == NULL) { // нет правого поддерерва
+                    if (x->parent->left == x) {
+                        x->parent->left = x->left;
+                        if (x->left != NULL) {
                             x->left->parent = x->parent;
                         }
-                    }
-                    else{
-                        x->parent->right=x->left;
-                        if(x->left!=NULL) {
+                    } else {
+                        x->parent->right = x->left;
+                        if (x->left != NULL) {
                             x->left->parent = x->parent;
                         }
 
                     }
-                    if (flag==0){
+                    if (flag == 0) {
                         free(x->info->string);
                         free(x->info);
                         free(x->key);
                     }
 
-                }
-                else{  // есть левое и правое
-                    Item * y=min(x->right);
-                    x->info=y->info;
-                    char* s=y->key;
-                    delete(root,s,1);
-                    x->key=s;
+                } else {  // есть левое и правое
+                    Item *y = min(x->right);
+                    x->info = y->info;
+                    char *s = y->key;
+                    delete(root, s, 1);
+                    x->key = s;
                 }
             }
         }
     }
     return 0;
 }
-void delete_all(Item *ptr){
+
+void delete_all(Item *ptr) {
     if (ptr != NULL) {
         delete_all(ptr->left);
         delete_all(ptr->right);
@@ -319,4 +373,9 @@ void delete_all(Item *ptr){
         free(ptr->key);
         free(ptr);
     }
+}
+int work_with_file(Item** root,char *name){
+    int res;
+
+    return res;
 }
