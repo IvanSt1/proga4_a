@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <malloc.h>
 #include "dialog.h"
 #include "get.h"
 #include "item.h"
@@ -32,7 +33,7 @@ int main() {
         k1 = strcmp("y", answer);
     }
     if (k1 == 0) {
-        Add_from_file(&root);
+         Add_from_file(&root);
     }
     rc = dialog(msgs, NMgsgs);
     while (rc) {
@@ -41,6 +42,7 @@ int main() {
         }
         rc = dialog(msgs, NMgsgs);
     }
+    free(answer);
     D_Delete_ALL(&root);
     return 0;
 }

@@ -136,7 +136,7 @@ void Add_from_file(Item** root){
         }
         file = fopen(name, "r");
     }
-   int res= work_with_file(root,file);
+   int res=work_with_file(root,file);
     if (res!=0){
         printf("Format of information is wrong in file\n");
         D_Delete_ALL(root);
@@ -144,4 +144,6 @@ void Add_from_file(Item** root){
     else{
         printf("Successful reading from file\n");
     }
+    free(name);
+    fclose(file);
 }

@@ -17,6 +17,7 @@ int insert(Item **root, char *key, int first, int second, char *third) {
         (*root)->info->string = third;
         (*root)->left = NULL;
         (*root)->right = NULL;
+        (*root)->parent=NULL;
 
     } else {
         Item *ptr = *root;
@@ -252,7 +253,6 @@ Item *max(Item *ptr) {
 }
 
 int delete(Item **root, char *key, int flag) {
-
     if (*root == NULL) {
         return 4;
     }
@@ -263,10 +263,10 @@ int delete(Item **root, char *key, int flag) {
         if (x == *root) { // удаляемый элемент корень
             if ((*root)->left == NULL) {
                 if ((*root)->right == NULL) {
+                    free((*root)->info->string);
+                    free((*root)->info);
+                    free((*root)->key);
                     *root = NULL;
-                    free(x->info->string);
-                    free(x->info);
-                    free(x->key);
                 } else {
                     (*root)->info = (*root)->right->info;
                     if ((*root)->right->left != NULL) {
@@ -381,8 +381,11 @@ int work_with_file(Item** root,FILE *file){
     char* key;
     char* string;
     int n;
-    while(!feof(file)){
-        fscanf(file," %m[^\n]",&key);
+    while(feof(file)==0){
+        n=fscanf(file," %m[^\n]",&key);
+        if (n==-1){
+            break;
+        }
         fgetc(file);
         n=fscanf(file," %d",&num1);
         if (n==0){

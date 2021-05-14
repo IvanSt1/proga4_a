@@ -33,7 +33,6 @@ char *Get_Str() {
     int n;
     char *res;
     n = scanf(" %m[^\n]", &res);
-
     if (n == -1) {
         free(res);
         return NULL;
