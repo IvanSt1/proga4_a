@@ -90,12 +90,12 @@ void show_tree(Item *ptr, int i) {
     if (ptr == NULL) {
         return;
     } else {
-        show_tree(ptr->left, i + 1);
+        show_tree(ptr->right, i + 1);
         for (int j = 0; j < i; j++) {
             printf("\t");
         }
         printf("%s\n", ptr->key);
-        show_tree(ptr->right, i + 1);
+        show_tree(ptr->left, i + 1);
     }
 }
 
@@ -252,7 +252,7 @@ Item *max(Item *ptr) {
     return x;
 }
 
-int delete(Item **root, char *key, int flag) {
+int delete(Item **root, char *key,int flag) {
     if (*root == NULL) {
         return 4;
     }
@@ -268,47 +268,30 @@ int delete(Item **root, char *key, int flag) {
                     free((*root)->key);
                     *root = NULL;
                 } else {
-                    (*root)->info = (*root)->right->info;
-                    if ((*root)->right->left != NULL) {
-                        (*root)->right->left->parent = (*root);
-                    }
-                    if ((*root)->right->right != NULL) {
-                        (*root)->right->right->parent = (*root);
-                    }
+                    free((*root)->info->string);
+                    free((*root)->info);
+                    (*root)->info=(*root)->right->info;
                     char *s = x->right->key;
-                    delete(root, s, 1);
+                    delete(root, s,1);
                     (*root)->key = s;
 
                 }
             } else {
                 if ((*root)->right == NULL) {
-                    (*root)->info = x->left->info;
-                    if ((*root)->left->left != NULL) {
-                        (*root)->left->left->parent = (*root);
-                    }
-                    if ((*root)->left->right != NULL) {
-                        (*root)->left->right->parent = (*root);
-                    }
+                    free((*root)->info->string);
+                    free((*root)->info);
+                    (*root)->info=(*root)->right->info;
                     char *s = x->left->key;
-                    delete(root, s, 1);
+                    delete(root, s,1);
                     (*root)->key = s;
                 } else {
-                    if ((*root)->right->left != NULL) {
-                        (*root)->right->left->parent = (*root);
-                    }
-                    if ((*root)->right->right != NULL) {
-                        (*root)->right->right->parent = (*root);
-                    }
-                    if ((*root)->left->left != NULL) {
-                        (*root)->left->left->parent = (*root);
-                    }
-                    if ((*root)->left->right != NULL) {
-                        (*root)->left->right->parent = (*root);
-                    }
+
                     Item *y = min(x->right);
-                    (*root)->info = y->info;
+                    free((*root)->info->string);
+                    free((*root)->info);
+                    (*root)->info=(*root)->right->info;
                     char *s = y->key;
-                    delete(root, s, 1);
+                    delete(root, s,1);
                     (*root)->key = s;
                 }
             }
@@ -326,11 +309,13 @@ int delete(Item **root, char *key, int flag) {
                         x->right->parent = x->parent;
                     }
                 }
-                if (flag == 0) {
+                if (flag ==0) {
                     free(x->info->string);
                     free(x->info);
                     free(x->key);
                 }
+
+                free(x);
             } else {
                 if (x->right == NULL) { // нет правого поддерерва
                     if (x->parent->left == x) {
@@ -345,17 +330,20 @@ int delete(Item **root, char *key, int flag) {
                         }
 
                     }
-                    if (flag == 0) {
+                    if (flag==0) {
                         free(x->info->string);
                         free(x->info);
                         free(x->key);
                     }
 
+                    free(x);
                 } else {  // есть левое и правое
                     Item *y = min(x->right);
-                    x->info = y->info;
+                    free(x->info->string);
+                    free(x->info);
+                    x->info=y->right->info;
                     char *s = y->key;
-                    delete(root, s, 1);
+                    delete(root, s,1);
                     x->key = s;
                 }
             }
