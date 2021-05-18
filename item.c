@@ -273,6 +273,7 @@ int delete(Item **root, char *key,int flag) {
                     (*root)->info=(*root)->right->info;
                     char *s = x->right->key;
                     delete(root, s,1);
+                    free((*root)->key );
                     (*root)->key = s;
 
                 }
@@ -283,6 +284,7 @@ int delete(Item **root, char *key,int flag) {
                     (*root)->info=(*root)->right->info;
                     char *s = x->left->key;
                     delete(root, s,1);
+                    free((*root)->key );
                     (*root)->key = s;
                 } else {
 
@@ -292,6 +294,7 @@ int delete(Item **root, char *key,int flag) {
                     (*root)->info=(*root)->right->info;
                     char *s = y->key;
                     delete(root, s,1);
+                    free((*root)->key );
                     (*root)->key = s;
                 }
             }
@@ -344,6 +347,7 @@ int delete(Item **root, char *key,int flag) {
                     x->info=y->right->info;
                     char *s = y->key;
                     delete(root, s,1);
+                    free(x->key);
                     x->key = s;
                 }
             }
